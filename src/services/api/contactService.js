@@ -6,7 +6,7 @@ const apperClient = new ApperClient({
 });
 
 const contactService = {
-  getAll: async () => {
+getAll: async () => {
     try {
       const response = await apperClient.fetchRecords('contact_c', {
         fields: [
@@ -18,7 +18,8 @@ const contactService = {
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "tags_c"}},
           {"field": {"Name": "notes_c"}}
-        ]
+        ],
+        where: []
       });
 
       if (!response.success) {
