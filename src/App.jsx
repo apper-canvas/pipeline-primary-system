@@ -118,11 +118,17 @@ function AppContent() {
   }
 
   return (
-    <AuthContext.Provider value={authMethods}>
+<AuthContext.Provider value={authMethods}>
       <div className="min-h-screen bg-background">
         <Header onAddClick={() => {}} />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-<Routes>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/callback" element={<Callback />} />
+            <Route path="/error" element={<ErrorPage />} />
+            <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
+            <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/pipeline" element={<Pipeline />} />
@@ -141,21 +147,6 @@ function AppContent() {
           draggable
           pauseOnHover
         />
-<main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/callback" element={<Callback />} />
-            <Route path="/error" element={<ErrorPage />} />
-            <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
-            <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/contacts" element={<Contacts />} />
-            <Route path="/pipeline" element={<Pipeline />} />
-            <Route path="/deals" element={<Deals />} />
-            <Route path="/activities" element={<Activities />} />
-          </Routes>
-        </main>
       </div>
     </AuthContext.Provider>
   );

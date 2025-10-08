@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { useAuth } from "@/contexts/AuthContext";
+import { AuthContext } from "@/App";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Error from "@/components/ui/Error";
@@ -15,8 +15,8 @@ import dealService from "@/services/api/dealService";
 import contactService from "@/services/api/contactService";
 
 const Deals = () => {
-  const { user } = useAuth();
-  const userId = user?.id;
+const authMethods = useContext(AuthContext);
+  const { isInitialized, userId } = authMethods || {};
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
