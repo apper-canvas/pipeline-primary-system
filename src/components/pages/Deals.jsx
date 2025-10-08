@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Error from "@/components/ui/Error";
@@ -12,9 +13,7 @@ import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import dealService from "@/services/api/dealService";
 import contactService from "@/services/api/contactService";
-import { useAuth } from "@/contexts/AuthContext";
 
-const Deals = () => {
 const Deals = () => {
   const { user } = useAuth();
   const userId = user?.id;
@@ -212,19 +211,18 @@ const sortedDeals = [...filteredDeals].sort((a, b) => {
                   transition={{ delay: index * 0.05 }}
                   className="p-6 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="flex items-start justify-between mb-4">
+<div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
-{deal.title_c}
-                    </h3>
-                    {contact && (
-                      <p className="text-sm text-secondary flex items-center gap-2">
-                        <ApperIcon name="Building2" size={14} />
-                        {contact.name_c} - {contact.company_c}
-                      </p>
+                        {deal.title_c}
+                      </h3>
+                      {contact && (
+                        <p className="text-sm text-secondary flex items-center gap-2">
+                          <ApperIcon name="Building2" size={14} />
+                          {contact.name_c} - {contact.company_c}
+                        </p>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
 <Button
                         variant="ghost"
                         size="sm"
@@ -246,14 +244,14 @@ const sortedDeals = [...filteredDeals].sort((a, b) => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm text-secondary mb-1">Value</p>
                       <p className="text-xl font-bold text-gray-900">
-{formatCurrency(deal.value_c)}
-                    </p>
-                  </div>
-                  <div>
+                        {formatCurrency(deal.value_c)}
+                      </p>
+                    </div>
+                    <div>
                     <p className="text-sm text-secondary mb-1">Stage</p>
                     <Badge variant={deal.stage_c}>
                       {deal.stage_c.charAt(0).toUpperCase() + deal.stage_c.slice(1)}
@@ -270,13 +268,13 @@ const sortedDeals = [...filteredDeals].sort((a, b) => {
                     <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
                       <ApperIcon name="Calendar" size={14} />
                       {format(new Date(deal.expected_close_date_c), "MMM d, yyyy")}
-                    </p>
-                    </div>
+</p>
+                  </div>
                   </div>
 
-{deal.notes_c && (
-                  <p className="mt-4 text-sm text-secondary border-t pt-4">
-                    {deal.notes_c}
+                  {deal.notes_c && (
+                    <p className="mt-4 text-sm text-secondary border-t pt-4">
+                      {deal.notes_c}
                     </p>
                   )}
                 </motion.div>
