@@ -4,21 +4,25 @@ import Input from "@/components/atoms/Input";
 import ApperIcon from "@/components/ApperIcon";
 
 const CompanyModal = ({ company, onClose, onSave }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     description: "",
     website: "",
+    contactNumber: "",
+    address: "",
     tags: ""
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (company) {
+if (company) {
       setFormData({
         name: company.name_c || "",
         description: company.description_c || "",
         website: company.website_c || "",
+        contactNumber: company.contact_number_c || "",
+        address: company.address_c || "",
         tags: Array.isArray(company.tags) ? company.tags.join(", ") : ""
       });
     }
@@ -52,8 +56,10 @@ const CompanyModal = ({ company, onClose, onSave }) => {
     try {
       const companyData = {
         name: formData.name.trim(),
-        description: formData.description.trim(),
+description: formData.description.trim(),
         website: formData.website.trim(),
+        contactNumber: formData.contactNumber.trim(),
+        address: formData.address.trim(),
         tags: formData.tags.split(",").map(t => t.trim()).filter(t => t)
       };
       
@@ -122,6 +128,34 @@ const CompanyModal = ({ company, onClose, onSave }) => {
                 onChange={handleChange}
                 placeholder="https://example.com"
                 disabled={loading}
+              />
+</div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact Number
+              </label>
+              <Input
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleChange}
+                placeholder="Enter contact number"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter company address"
+                disabled={loading}
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 

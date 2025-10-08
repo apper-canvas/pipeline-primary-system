@@ -16,7 +16,13 @@ const CompanyTable = ({ companies, onEdit, onDelete }) => {
                 Description
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Website
+Website
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Contact Number
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Address
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tags
@@ -37,7 +43,7 @@ const CompanyTable = ({ companies, onEdit, onDelete }) => {
                 <td className="px-6 py-4">
                   <div className="text-sm text-gray-900 max-w-xs truncate">
                     {company.description_c || "N/A"}
-                  </div>
+</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
@@ -53,6 +59,16 @@ const CompanyTable = ({ companies, onEdit, onDelete }) => {
                     ) : (
                       "N/A"
                     )}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">
+                    {company.contact_number_c || "N/A"}
+                  </div>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="text-sm text-gray-900 whitespace-pre-wrap max-w-xs">
+                    {company.address_c || "N/A"}
                   </div>
                 </td>
                 <td className="px-6 py-4">

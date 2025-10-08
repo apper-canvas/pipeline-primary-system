@@ -8,7 +8,7 @@ const apperClient = new ApperClient({
 const companyService = {
   getAll: async () => {
     try {
-      const response = await apperClient.fetchRecords('companies_c', {
+const response = await apperClient.fetchRecords('companies_c', {
         fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
@@ -17,7 +17,9 @@ const companyService = {
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "description_c"}},
-          {"field": {"Name": "website_c"}}
+          {"field": {"Name": "website_c"}},
+          {"field": {"Name": "contact_number_c"}},
+          {"field": {"Name": "address_c"}}
         ],
         where: []
       });
@@ -40,7 +42,7 @@ const companyService = {
   getById: async (id) => {
     try {
       const response = await apperClient.getRecordById('companies_c', parseInt(id), {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "Tags"}},
@@ -48,7 +50,9 @@ const companyService = {
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "description_c"}},
-          {"field": {"Name": "website_c"}}
+          {"field": {"Name": "website_c"}},
+          {"field": {"Name": "contact_number_c"}},
+          {"field": {"Name": "address_c"}}
         ]
       });
 
@@ -69,11 +73,13 @@ const companyService = {
   create: async (companyData) => {
     try {
       const payload = {
-        records: [{
+records: [{
           Name: companyData.name || '',
           name_c: companyData.name || '',
           description_c: companyData.description || '',
           website_c: companyData.website || '',
+          contact_number_c: companyData.contactNumber || '',
+          address_c: companyData.address || '',
           Tags: Array.isArray(companyData.tags) ? companyData.tags.join(',') : companyData.tags || ''
         }]
       };
@@ -113,10 +119,12 @@ const companyService = {
       const payload = {
         records: [{
           Id: parseInt(id),
-          Name: companyData.name || '',
+Name: companyData.name || '',
           name_c: companyData.name || '',
           description_c: companyData.description || '',
           website_c: companyData.website || '',
+          contact_number_c: companyData.contactNumber || '',
+          address_c: companyData.address || '',
           Tags: Array.isArray(companyData.tags) ? companyData.tags.join(',') : companyData.tags || ''
         }]
       };
@@ -180,7 +188,7 @@ const companyService = {
   search: async (query) => {
     try {
       const response = await apperClient.fetchRecords('companies_c', {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "Tags"}},
@@ -188,7 +196,9 @@ const companyService = {
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "description_c"}},
-          {"field": {"Name": "website_c"}}
+          {"field": {"Name": "website_c"}},
+          {"field": {"Name": "contact_number_c"}},
+          {"field": {"Name": "address_c"}}
         ],
         whereGroups: [{
           operator: "OR",
@@ -202,10 +212,20 @@ const companyService = {
               conditions: [
                 {"fieldName": "description_c", "operator": "Contains", "values": [query]}
               ]
-            },
+},
             {
               conditions: [
                 {"fieldName": "website_c", "operator": "Contains", "values": [query]}
+              ]
+            },
+            {
+              conditions: [
+                {"fieldName": "contact_number_c", "operator": "Contains", "values": [query]}
+              ]
+            },
+            {
+              conditions: [
+                {"fieldName": "address_c", "operator": "Contains", "values": [query]}
               ]
             }
           ]
