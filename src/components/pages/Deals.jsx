@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import SearchBar from "@/components/molecules/SearchBar";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import DealModal from "@/components/organisms/DealModal";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import dealService from "@/services/api/dealService";
-import contactService from "@/services/api/contactService";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import SearchBar from "@/components/molecules/SearchBar";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import DealModal from "@/components/organisms/DealModal";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import dealService from "@/services/api/dealService";
+import contactService from "@/services/api/contactService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Deals = () => {
+const Deals = () => {
+  const { user } = useAuth();
+  const userId = user?.id;
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [filteredDeals, setFilteredDeals] = useState([]);
@@ -23,7 +27,6 @@ const Deals = () => {
   const [selectedDeal, setSelectedDeal] = useState(null);
   const [sortField, setSortField] = useState("value");
   const [sortDirection, setSortDirection] = useState("desc");
-
   useEffect(() => {
     loadDeals();
   }, []);
@@ -222,10 +225,12 @@ const sortedDeals = [...filteredDeals].sort((a, b) => {
                       )}
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button
+<Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleEditDeal(deal)}
+                        disabled={deal.Owner?.Id !== userId}
+                        className={deal.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}
                       >
                         <ApperIcon name="Edit2" size={16} />
                       </Button>
@@ -233,7 +238,8 @@ const sortedDeals = [...filteredDeals].sort((a, b) => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDeleteDeal(deal.Id)}
-                        className="text-red-600 hover:bg-red-50"
+                        disabled={deal.Owner?.Id !== userId}
+                        className={`text-red-600 hover:bg-red-50 ${deal.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
                         <ApperIcon name="Trash2" size={16} />
                       </Button>

@@ -17,7 +17,8 @@ getAll: async () => {
           {"field": {"Name": "phone_c"}},
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "tags_c"}},
-          {"field": {"Name": "notes_c"}}
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "Owner"}}
         ],
         where: []
       });
@@ -37,7 +38,7 @@ getAll: async () => {
     }
   },
 
-  getById: async (id) => {
+getById: async (id) => {
     try {
       const response = await apperClient.getRecordById('contact_c', parseInt(id), {
         fields: [
@@ -48,7 +49,8 @@ getAll: async () => {
           {"field": {"Name": "phone_c"}},
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "tags_c"}},
-          {"field": {"Name": "notes_c"}}
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "Owner"}}
         ]
       });
 
@@ -181,7 +183,7 @@ getAll: async () => {
     }
   },
 
-  search: async (query) => {
+search: async (query) => {
     try {
       const response = await apperClient.fetchRecords('contact_c', {
         fields: [
@@ -192,7 +194,8 @@ getAll: async () => {
           {"field": {"Name": "phone_c"}},
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "tags_c"}},
-          {"field": {"Name": "notes_c"}}
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "Owner"}}
         ],
         whereGroups: [{
           operator: "OR",

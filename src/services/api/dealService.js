@@ -6,7 +6,7 @@ const apperClient = new ApperClient({
 });
 
 const dealService = {
-  getAll: async () => {
+getAll: async () => {
     try {
       const response = await apperClient.fetchRecords('deal_c', {
         fields: [
@@ -17,7 +17,8 @@ const dealService = {
           {"field": {"Name": "probability_c"}},
           {"field": {"Name": "expected_close_date_c"}},
           {"field": {"Name": "notes_c"}},
-          {"field": {"Name": "contact_id_c"}}
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "Owner"}}
         ]
       });
 
@@ -36,7 +37,7 @@ const dealService = {
     }
   },
 
-  getById: async (id) => {
+getById: async (id) => {
     try {
       const response = await apperClient.getRecordById('deal_c', parseInt(id), {
         fields: [
@@ -47,7 +48,8 @@ const dealService = {
           {"field": {"Name": "probability_c"}},
           {"field": {"Name": "expected_close_date_c"}},
           {"field": {"Name": "notes_c"}},
-          {"field": {"Name": "contact_id_c"}}
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "Owner"}}
         ]
       });
 

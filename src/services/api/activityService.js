@@ -6,7 +6,7 @@ const apperClient = new ApperClient({
 });
 
 const activityService = {
-  getAll: async () => {
+getAll: async () => {
     try {
       const response = await apperClient.fetchRecords('activity_c', {
         fields: [
@@ -15,7 +15,8 @@ const activityService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "timestamp_c"}},
           {"field": {"Name": "contact_id_c"}},
-          {"field": {"Name": "deal_id_c"}}
+          {"field": {"Name": "deal_id_c"}},
+          {"field": {"Name": "Owner"}}
         ],
         orderBy: [{"fieldName": "timestamp_c", "sorttype": "DESC"}]
       });
@@ -35,8 +36,7 @@ const activityService = {
       return [];
     }
   },
-
-  getById: async (id) => {
+getById: async (id) => {
     try {
       const response = await apperClient.getRecordById('activity_c', parseInt(id), {
         fields: [
@@ -45,7 +45,8 @@ const activityService = {
           {"field": {"Name": "description_c"}},
           {"field": {"Name": "timestamp_c"}},
           {"field": {"Name": "contact_id_c"}},
-          {"field": {"Name": "deal_id_c"}}
+          {"field": {"Name": "deal_id_c"}},
+          {"field": {"Name": "Owner"}}
         ]
       });
 

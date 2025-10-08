@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import SearchBar from "@/components/molecules/SearchBar";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import ActivityModal from "@/components/organisms/ActivityModal";
-import activityService from "@/services/api/activityService";
-import contactService from "@/services/api/contactService";
-import dealService from "@/services/api/dealService";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import SearchBar from "@/components/molecules/SearchBar";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import ActivityModal from "@/components/organisms/ActivityModal";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import activityService from "@/services/api/activityService";
+import dealService from "@/services/api/dealService";
+import contactService from "@/services/api/contactService";
 const Activities = () => {
   const [activities, setActivities] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -81,10 +81,12 @@ const Activities = () => {
     setModalOpen(true);
   };
 
-  const handleSaveActivity = async (activityData) => {
+const handleSaveActivity = async (activityData) => {
     try {
       if (selectedActivity) {
-        toast.info("Activity updates not yet implemented");
+        await activityService.update(selectedActivity.Id, activityData);
+        toast.success("Activity updated successfully!");
+        await loadActivities();
       } else {
         const created = await activityService.create(activityData);
         if (created) {

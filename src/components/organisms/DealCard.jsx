@@ -1,9 +1,11 @@
-import ApperIcon from "@/components/ApperIcon";
-import Badge from "@/components/atoms/Badge";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-
+import React from "react";
+import { useSelector } from "react-redux";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
 const DealCard = ({ deal, contact, onEdit, onDelete, isDragging = false }) => {
+  const { userId } = useSelector((state) => state.user);
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -51,15 +53,17 @@ whileHover={{ scale: isDragging ? 1 : 1.02 }}
           )}
         </div>
         <div className="flex items-center gap-1 ml-2">
-          <button
+<button
             onClick={() => onEdit(deal)}
-            className="p-1.5 text-gray-400 hover:text-primary hover:bg-blue-50 rounded transition-colors"
+            disabled={deal.Owner?.Id !== userId}
+            className={`p-1.5 text-gray-400 hover:text-primary hover:bg-blue-50 rounded transition-colors ${deal.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <ApperIcon name="Edit2" size={14} />
           </button>
           <button
             onClick={() => onDelete(deal.Id)}
-            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            disabled={deal.Owner?.Id !== userId}
+            className={`p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors ${deal.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <ApperIcon name="Trash2" size={14} />
           </button>

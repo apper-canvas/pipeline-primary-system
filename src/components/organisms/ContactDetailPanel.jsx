@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
@@ -9,6 +10,7 @@ import activityService from "@/services/api/activityService";
 import dealService from "@/services/api/dealService";
 
 const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
+  const { userId } = useSelector((state) => state.user);
   const [activeTab, setActiveTab] = useState("info");
   const [activities, setActivities] = useState([]);
   const [deals, setDeals] = useState([]);
@@ -81,7 +83,12 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
               </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button size="sm" onClick={() => onEdit(contact)}>
+<Button 
+                  size="sm" 
+                  onClick={() => onEdit(contact)}
+                  disabled={contact.Owner?.Id !== userId}
+                  className={contact.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}
+                >
                   <ApperIcon name="Edit2" size={16} className="mr-2" />
                   Edit
                 </Button>

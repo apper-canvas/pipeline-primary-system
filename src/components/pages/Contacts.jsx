@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import SearchBar from "@/components/molecules/SearchBar";
 import Button from "@/components/atoms/Button";
@@ -12,6 +13,7 @@ import ApperIcon from "@/components/ApperIcon";
 import contactService from "@/services/api/contactService";
 
 const Contacts = () => {
+  const { userId } = useSelector((state) => state.user);
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,6 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [detailPanelOpen, setDetailPanelOpen] = useState(false);
   const [detailContact, setDetailContact] = useState(null);
-
   useEffect(() => {
     loadContacts();
   }, []);

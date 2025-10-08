@@ -1,10 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
-import { motion } from "framer-motion";
 
 const ContactTable = ({ contacts, onEdit, onDelete, onView }) => {
+  const { userId } = useSelector((state) => state.user);
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
 
@@ -147,7 +149,7 @@ const ContactTable = ({ contacts, onEdit, onDelete, onView }) => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
-                    <Button
+<Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onView(contact)}
@@ -158,6 +160,8 @@ const ContactTable = ({ contacts, onEdit, onDelete, onView }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => onEdit(contact)}
+                      disabled={contact.Owner?.Id !== userId}
+                      className={contact.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}
                     >
                       <ApperIcon name="Edit2" size={16} />
                     </Button>
@@ -165,7 +169,8 @@ const ContactTable = ({ contacts, onEdit, onDelete, onView }) => {
                       variant="ghost"
                       size="sm"
                       onClick={() => onDelete(contact.Id)}
-                      className="text-red-600 hover:bg-red-50"
+                      disabled={contact.Owner?.Id !== userId}
+                      className={`text-red-600 hover:bg-red-50 ${contact.Owner?.Id !== userId ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                       <ApperIcon name="Trash2" size={16} />
                     </Button>
