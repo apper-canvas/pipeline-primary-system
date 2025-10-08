@@ -1,51 +1,202 @@
-import activitiesData from "../mockData/activities.json";
+const { ApperClient } = window.ApperSDK;
 
-let activities = [...activitiesData];
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 const activityService = {
   getAll: async () => {
-    await delay(300);
-    return [...activities];
+    try {
+      const response = await apperClient.fetchRecords('activity_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "timestamp_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "deal_id_c"}}
+        ],
+        orderBy: [{"fieldName": "timestamp_c", "sorttype": "DESC"}]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(activity => ({
+        ...activity,
+        contactId: activity.contact_id_c?.Id || activity.contact_id_c,
+        dealId: activity.deal_id_c?.Id || activity.deal_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching activities:", error);
+      return [];
+    }
   },
 
   getById: async (id) => {
-    await delay(200);
-    const activity = activities.find((a) => a.Id === parseInt(id));
-    return activity ? { ...activity } : null;
+    try {
+      const response = await apperClient.getRecordById('activity_c', parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "timestamp_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "deal_id_c"}}
+        ]
+      });
+
+      if (!response.success || !response.data) {
+        return null;
+      }
+
+      return {
+        ...response.data,
+        contactId: response.data.contact_id_c?.Id || response.data.contact_id_c,
+        dealId: response.data.deal_id_c?.Id || response.data.deal_id_c
+      };
+    } catch (error) {
+      console.error(`Error fetching activity ${id}:`, error);
+      return null;
+    }
   },
 
   getByContactId: async (contactId) => {
-    await delay(200);
-    return activities.filter((a) => a.contactId === parseInt(contactId));
+    try {
+      const response = await apperClient.fetchRecords('activity_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "timestamp_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "deal_id_c"}}
+        ],
+        where: [
+          {"FieldName": "contact_id_c", "Operator": "EqualTo", "Values": [parseInt(contactId)]}
+        ],
+        orderBy: [{"fieldName": "timestamp_c", "sorttype": "DESC"}]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(activity => ({
+        ...activity,
+        contactId: activity.contact_id_c?.Id || activity.contact_id_c,
+        dealId: activity.deal_id_c?.Id || activity.deal_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching activities by contact:", error);
+      return [];
+    }
   },
 
   getByDealId: async (dealId) => {
-    await delay(200);
-    return activities.filter((a) => a.dealId === parseInt(dealId));
+    try {
+      const response = await apperClient.fetchRecords('activity_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "type_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "timestamp_c"}},
+          {"field": {"Name": "contact_id_c"}},
+          {"field": {"Name": "deal_id_c"}}
+        ],
+        where: [
+          {"FieldName": "deal_id_c", "Operator": "EqualTo", "Values": [parseInt(dealId)]}
+        ],
+        orderBy: [{"fieldName": "timestamp_c", "sorttype": "DESC"}]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(activity => ({
+        ...activity,
+        contactId: activity.contact_id_c?.Id || activity.contact_id_c,
+        dealId: activity.deal_id_c?.Id || activity.deal_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching activities by deal:", error);
+      return [];
+    }
   },
 
   create: async (activityData) => {
-    await delay(300);
-    const maxId = activities.reduce((max, a) => Math.max(max, a.Id), 0);
-    const newActivity = {
-      Id: maxId + 1,
-      ...activityData,
-      timestamp: new Date().toISOString(),
-    };
-    activities.push(newActivity);
-    return { ...newActivity };
+    try {
+      const payload = {
+        records: [{
+          type_c: activityData.type,
+          description_c: activityData.description,
+          timestamp_c: new Date().toISOString(),
+          contact_id_c: parseInt(activityData.contactId),
+          deal_id_c: activityData.dealId ? parseInt(activityData.dealId) : null
+        }]
+      };
+
+      const response = await apperClient.createRecord('activity_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} activities:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const created = successful[0].data;
+          return {
+            ...created,
+            contactId: created.contact_id_c?.Id || created.contact_id_c,
+            dealId: created.deal_id_c?.Id || created.deal_id_c
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating activity:", error);
+      return null;
+    }
   },
 
   delete: async (id) => {
-    await delay(300);
-    const index = activities.findIndex((a) => a.Id === parseInt(id));
-    if (index !== -1) {
-      activities.splice(index, 1);
-      return true;
+    try {
+      const response = await apperClient.deleteRecord('activity_c', {
+        RecordIds: [parseInt(id)]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const failed = response.results.filter(r => !r.success);
+        if (failed.length > 0) {
+          console.error(`Failed to delete activity:`, failed);
+          return false;
+        }
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error deleting activity:", error);
+      return false;
     }
-    return false;
   },
 };
 

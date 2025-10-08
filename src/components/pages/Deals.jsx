@@ -53,12 +53,12 @@ const Deals = () => {
     }
 
     const lowerQuery = query.toLowerCase();
-    const filtered = deals.filter((d) => {
+const filtered = deals.filter((d) => {
       const contact = contacts.find((c) => c.Id === d.contactId);
       return (
-        d.title.toLowerCase().includes(lowerQuery) ||
-        contact?.name.toLowerCase().includes(lowerQuery) ||
-        contact?.company.toLowerCase().includes(lowerQuery)
+        d.title_c.toLowerCase().includes(lowerQuery) ||
+        contact?.name_c.toLowerCase().includes(lowerQuery) ||
+        contact?.company_c.toLowerCase().includes(lowerQuery)
       );
     });
     setFilteredDeals(filtered);
@@ -73,13 +73,13 @@ const Deals = () => {
     }
   };
 
-  const sortedDeals = [...filteredDeals].sort((a, b) => {
+const sortedDeals = [...filteredDeals].sort((a, b) => {
     const direction = sortDirection === "asc" ? 1 : -1;
     if (sortField === "value") {
-      return (a.value - b.value) * direction;
+      return (a.value_c - b.value_c) * direction;
     }
     if (sortField === "expectedCloseDate") {
-      return (new Date(a.expectedCloseDate) - new Date(b.expectedCloseDate)) * direction;
+      return (new Date(a.expected_close_date_c) - new Date(b.expected_close_date_c)) * direction;
     }
     return 0;
   });
@@ -212,13 +212,13 @@ const Deals = () => {
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        {deal.title}
-                      </h3>
-                      {contact && (
-                        <p className="text-sm text-secondary flex items-center gap-2">
-                          <ApperIcon name="Building2" size={14} />
-                          {contact.name} - {contact.company}
-                        </p>
+{deal.title_c}
+                    </h3>
+                    {contact && (
+                      <p className="text-sm text-secondary flex items-center gap-2">
+                        <ApperIcon name="Building2" size={14} />
+                        {contact.name_c} - {contact.company_c}
+                      </p>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -244,33 +244,33 @@ const Deals = () => {
                     <div>
                       <p className="text-sm text-secondary mb-1">Value</p>
                       <p className="text-xl font-bold text-gray-900">
-                        {formatCurrency(deal.value)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary mb-1">Stage</p>
-                      <Badge variant={deal.stage}>
-                        {deal.stage.charAt(0).toUpperCase() + deal.stage.slice(1)}
-                      </Badge>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary mb-1">Probability</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {deal.probability}%
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-secondary mb-1">Expected Close</p>
-                      <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
-                        <ApperIcon name="Calendar" size={14} />
-                        {format(new Date(deal.expectedCloseDate), "MMM d, yyyy")}
-                      </p>
+{formatCurrency(deal.value_c)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-secondary mb-1">Stage</p>
+                    <Badge variant={deal.stage_c}>
+                      {deal.stage_c.charAt(0).toUpperCase() + deal.stage_c.slice(1)}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-secondary mb-1">Probability</p>
+                    <p className="text-lg font-semibold text-gray-900">
+                      {deal.probability_c}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-secondary mb-1">Expected Close</p>
+                    <p className="text-sm font-medium text-gray-900 flex items-center gap-1">
+                      <ApperIcon name="Calendar" size={14} />
+                      {format(new Date(deal.expected_close_date_c), "MMM d, yyyy")}
+                    </p>
                     </div>
                   </div>
 
-                  {deal.notes && (
-                    <p className="mt-4 text-sm text-secondary border-t pt-4">
-                      {deal.notes}
+{deal.notes_c && (
+                  <p className="mt-4 text-sm text-secondary border-t pt-4">
+                    {deal.notes_c}
                     </p>
                   )}
                 </motion.div>

@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { AuthContext } from "../../App";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { motion, AnimatePresence } from "framer-motion";
-
 const Header = ({ onAddClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { logout } = useContext(AuthContext);
 
   const navItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
@@ -13,7 +14,6 @@ const Header = ({ onAddClick }) => {
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
   ];
-
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,11 +51,15 @@ const Header = ({ onAddClick }) => {
             ))}
           </nav>
 
-          {/* Desktop Actions */}
+{/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
             <Button onClick={onAddClick} size="sm">
               <ApperIcon name="Plus" size={16} className="mr-2" />
               Quick Add
+            </Button>
+            <Button onClick={logout} size="sm" variant="outline">
+              <ApperIcon name="LogOut" size={16} className="mr-2" />
+              Logout
             </Button>
           </div>
 

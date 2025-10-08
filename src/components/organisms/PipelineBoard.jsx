@@ -15,13 +15,13 @@ const PipelineBoard = ({ deals, contacts, onUpdateStage, onEdit, onDelete }) => 
     { id: "closed", label: "Closed Won", color: "green" },
   ];
 
-  const getStageDeals = (stageId) => {
-    return deals.filter((deal) => deal.stage === stageId);
+const getStageDeals = (stageId) => {
+    return deals.filter((deal) => deal.stage_c === stageId);
   };
 
-  const getStageTotalValue = (stageId) => {
+const getStageTotalValue = (stageId) => {
     const stageDeals = getStageDeals(stageId);
-    const total = stageDeals.reduce((sum, deal) => sum + deal.value, 0);
+    const total = stageDeals.reduce((sum, deal) => sum + deal.value_c, 0);
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
@@ -43,11 +43,11 @@ const PipelineBoard = ({ deals, contacts, onUpdateStage, onEdit, onDelete }) => 
     setDragOverStage(null);
   };
 
-  const handleDrop = async (e, stageId) => {
+const handleDrop = async (e, stageId) => {
     e.preventDefault();
     setDragOverStage(null);
 
-    if (draggedDeal && draggedDeal.stage !== stageId) {
+    if (draggedDeal && draggedDeal.stage_c !== stageId) {
       await onUpdateStage(draggedDeal.Id, stageId);
     }
     setDraggedDeal(null);

@@ -101,49 +101,49 @@ const ContactTable = ({ contacts, onEdit, onDelete, onView }) => {
                 className="hover:bg-gray-50 transition-colors"
               >
                 <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-full text-white font-semibold">
-                      {contact.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {contact.name}
-                      </p>
-                    </div>
+<div className="flex items-center gap-3">
+                  <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-blue-700 rounded-full text-white font-semibold">
+                    {contact.name_c
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
                   </div>
-                </td>
-                <td className="px-6 py-4">
-                  <p className="text-sm text-gray-900">{contact.company}</p>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm text-secondary">
-                      <ApperIcon name="Mail" size={14} />
-                      {contact.email}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-secondary">
-                      <ApperIcon name="Phone" size={14} />
-                      {contact.phone}
-                    </div>
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {contact.name_c}
+                    </p>
                   </div>
+                </div>
                 </td>
-                <td className="px-6 py-4">
-                  <Badge variant={contact.status}>
-                    {contact.status.charAt(0).toUpperCase() +
-                      contact.status.slice(1)}
-                  </Badge>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1">
-                    {contact.tags.map((tag, i) => (
-                      <Badge key={i} variant="default">
-                        {tag}
-                      </Badge>
-                    ))}
+<td className="px-6 py-4">
+                <p className="text-sm text-gray-900">{contact.company_c}</p>
+              </td>
+              <td className="px-6 py-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-sm text-secondary">
+                    <ApperIcon name="Mail" size={14} />
+                    {contact.email_c}
                   </div>
+                  <div className="flex items-center gap-2 text-sm text-secondary">
+                    <ApperIcon name="Phone" size={14} />
+                    {contact.phone_c}
+                  </div>
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <Badge variant={contact.status_c}>
+                  {contact.status_c.charAt(0).toUpperCase() +
+                    contact.status_c.slice(1)}
+                </Badge>
+              </td>
+              <td className="px-6 py-4">
+                <div className="flex flex-wrap gap-1">
+                  {contact.tags?.map((tag, i) => (
+                    <Badge key={i} variant="default">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">

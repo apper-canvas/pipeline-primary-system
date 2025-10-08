@@ -39,9 +39,9 @@ const Dashboard = () => {
   };
 
   const calculateStats = () => {
-    const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+const totalValue = deals.reduce((sum, deal) => sum + deal.value_c, 0);
     const avgDealSize = deals.length > 0 ? totalValue / deals.length : 0;
-    const wonDeals = deals.filter((d) => d.stage === "closed").length;
+    const wonDeals = deals.filter((d) => d.stage_c === "closed").length;
     const conversionRate = deals.length > 0 ? (wonDeals / deals.length) * 100 : 0;
 
     return {
@@ -54,10 +54,10 @@ const Dashboard = () => {
 
   const getAtRiskDeals = () => {
     const now = new Date();
-    return deals.filter((deal) => {
-      const closeDate = new Date(deal.expectedCloseDate);
+return deals.filter((deal) => {
+      const closeDate = new Date(deal.expected_close_date_c);
       const daysUntilClose = Math.ceil((closeDate - now) / (1000 * 60 * 60 * 24));
-      return daysUntilClose <= 14 && daysUntilClose >= 0 && deal.stage !== "closed";
+      return daysUntilClose <= 14 && daysUntilClose >= 0 && deal.stage_c !== "closed";
     });
   };
 
@@ -125,37 +125,37 @@ const Dashboard = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {["lead", "qualified", "proposal", "negotiation", "closed"].map(
             (stage) => {
-              const stageDeals = deals.filter((d) => d.stage === stage);
-              const stageValue = stageDeals.reduce(
-                (sum, d) => sum + d.value,
-                0
-              );
-              const stageColors = {
-                lead: "blue",
-                qualified: "yellow",
-                proposal: "orange",
-                negotiation: "purple",
-                closed: "green",
-              };
+const stageDeals = deals.filter((d) => d.stage_c === stage);
+            const stageValue = stageDeals.reduce(
+              (sum, d) => sum + d.value_c,
+              0
+            );
+            const stageColors = {
+              lead: "blue",
+              qualified: "yellow",
+              proposal: "orange",
+              negotiation: "purple",
+              closed: "green",
+            };
 
-              return (
-                <div
-                  key={stage}
-                  className={`bg-${stageColors[stage]}-50 rounded-lg p-4 border border-${stageColors[stage]}-200`}
-                >
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    {stage.charAt(0).toUpperCase() + stage.slice(1)}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stageDeals.length}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {formatCurrency(stageValue)}
-                  </p>
-                </div>
-              );
-            }
-          )}
+            return (
+              <div
+                key={stage}
+                className={`bg-${stageColors[stage]}-50 rounded-lg p-4 border border-${stageColors[stage]}-200`}
+              >
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  {stage.charAt(0).toUpperCase() + stage.slice(1)}
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mb-1">
+                  {stageDeals.length}
+                </p>
+                <p className="text-sm text-gray-600">
+                  {formatCurrency(stageValue)}
+                </p>
+              </div>
+            );
+          }
+        )}
         </div>
       </div>
 
@@ -192,37 +192,37 @@ const Dashboard = () => {
         </h2>
         <div className="space-y-4">
           {activities.slice(0, 5).map((activity) => {
-            const contact = contacts.find((c) => c.Id === activity.contactId);
-            return (
-              <div
-                key={activity.Id}
-                className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
-              >
-                <div className="flex items-center justify-center w-10 h-10 bg-blue-100 text-primary rounded-full">
-                  <ApperIcon
-                    name={
-                      activity.type === "email"
-                        ? "Mail"
-                        : activity.type === "call"
-                        ? "Phone"
-                        : activity.type === "meeting"
-                        ? "Users"
-                        : "FileText"
-                    }
-                    size={18}
-                  />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">
-                    {activity.description}
-                  </p>
-                  {contact && (
-                    <p className="text-sm text-secondary">
-                      {contact.name} - {contact.company}
-                    </p>
-                  )}
-                </div>
+const contact = contacts.find((c) => c.Id === activity.contactId);
+          return (
+            <div
+              key={activity.Id}
+              className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+            >
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-100 text-primary rounded-full">
+                <ApperIcon
+                  name={
+                    activity.type_c === "email"
+                      ? "Mail"
+                      : activity.type_c === "call"
+                      ? "Phone"
+                      : activity.type_c === "meeting"
+                      ? "Users"
+                      : "FileText"
+                  }
+                  size={18}
+                />
               </div>
+              <div className="flex-1">
+                <p className="font-medium text-gray-900">
+                  {activity.description_c}
+                </p>
+                {contact && (
+                  <p className="text-sm text-secondary">
+                    {contact.name_c} - {contact.company_c}
+                  </p>
+                )}
+              </div>
+            </div>
             );
           })}
         </div>

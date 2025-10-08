@@ -1,81 +1,288 @@
-import dealsData from "../mockData/deals.json";
+const { ApperClient } = window.ApperSDK;
 
-let deals = [...dealsData];
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 const dealService = {
   getAll: async () => {
-    await delay(300);
-    return [...deals];
+    try {
+      const response = await apperClient.fetchRecords('deal_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "value_c"}},
+          {"field": {"Name": "stage_c"}},
+          {"field": {"Name": "probability_c"}},
+          {"field": {"Name": "expected_close_date_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "contact_id_c"}}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(deal => ({
+        ...deal,
+        contactId: deal.contact_id_c?.Id || deal.contact_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching deals:", error);
+      return [];
+    }
   },
 
   getById: async (id) => {
-    await delay(200);
-    const deal = deals.find((d) => d.Id === parseInt(id));
-    return deal ? { ...deal } : null;
+    try {
+      const response = await apperClient.getRecordById('deal_c', parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "value_c"}},
+          {"field": {"Name": "stage_c"}},
+          {"field": {"Name": "probability_c"}},
+          {"field": {"Name": "expected_close_date_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "contact_id_c"}}
+        ]
+      });
+
+      if (!response.success || !response.data) {
+        return null;
+      }
+
+      return {
+        ...response.data,
+        contactId: response.data.contact_id_c?.Id || response.data.contact_id_c
+      };
+    } catch (error) {
+      console.error(`Error fetching deal ${id}:`, error);
+      return null;
+    }
   },
 
   getByContactId: async (contactId) => {
-    await delay(200);
-    return deals.filter((d) => d.contactId === parseInt(contactId));
+    try {
+      const response = await apperClient.fetchRecords('deal_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "value_c"}},
+          {"field": {"Name": "stage_c"}},
+          {"field": {"Name": "probability_c"}},
+          {"field": {"Name": "expected_close_date_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "contact_id_c"}}
+        ],
+        where: [
+          {"FieldName": "contact_id_c", "Operator": "EqualTo", "Values": [parseInt(contactId)]}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(deal => ({
+        ...deal,
+        contactId: deal.contact_id_c?.Id || deal.contact_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching deals by contact:", error);
+      return [];
+    }
   },
 
   getByStage: async (stage) => {
-    await delay(200);
-    return deals.filter((d) => d.stage === stage);
+    try {
+      const response = await apperClient.fetchRecords('deal_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "value_c"}},
+          {"field": {"Name": "stage_c"}},
+          {"field": {"Name": "probability_c"}},
+          {"field": {"Name": "expected_close_date_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "contact_id_c"}}
+        ],
+        where: [
+          {"FieldName": "stage_c", "Operator": "EqualTo", "Values": [stage]}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(deal => ({
+        ...deal,
+        contactId: deal.contact_id_c?.Id || deal.contact_id_c
+      }));
+    } catch (error) {
+      console.error("Error fetching deals by stage:", error);
+      return [];
+    }
   },
 
   create: async (dealData) => {
-    await delay(300);
-    const maxId = deals.reduce((max, d) => Math.max(max, d.Id), 0);
-    const newDeal = {
-      Id: maxId + 1,
-      ...dealData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    deals.push(newDeal);
-    return { ...newDeal };
+    try {
+      const payload = {
+        records: [{
+          title_c: dealData.title,
+          value_c: parseFloat(dealData.value),
+          stage_c: dealData.stage,
+          probability_c: parseInt(dealData.probability),
+          expected_close_date_c: dealData.expectedCloseDate,
+          notes_c: dealData.notes || '',
+          contact_id_c: parseInt(dealData.contactId)
+        }]
+      };
+
+      const response = await apperClient.createRecord('deal_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} deals:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const created = successful[0].data;
+          return {
+            ...created,
+            contactId: created.contact_id_c?.Id || created.contact_id_c
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating deal:", error);
+      return null;
+    }
   },
 
   update: async (id, dealData) => {
-    await delay(300);
-    const index = deals.findIndex((d) => d.Id === parseInt(id));
-    if (index !== -1) {
-      deals[index] = {
-        ...deals[index],
-        ...dealData,
-        Id: deals[index].Id,
-        updatedAt: new Date().toISOString(),
+    try {
+      const payload = {
+        records: [{
+          Id: parseInt(id),
+          title_c: dealData.title,
+          value_c: parseFloat(dealData.value),
+          stage_c: dealData.stage,
+          probability_c: parseInt(dealData.probability),
+          expected_close_date_c: dealData.expectedCloseDate,
+          notes_c: dealData.notes || '',
+          contact_id_c: parseInt(dealData.contactId)
+        }]
       };
-      return { ...deals[index] };
+
+      const response = await apperClient.updateRecord('deal_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} deals:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const updated = successful[0].data;
+          return {
+            ...updated,
+            contactId: updated.contact_id_c?.Id || updated.contact_id_c
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error updating deal:", error);
+      return null;
     }
-    return null;
   },
 
   updateStage: async (id, newStage) => {
-    await delay(200);
-    const index = deals.findIndex((d) => d.Id === parseInt(id));
-    if (index !== -1) {
-      deals[index] = {
-        ...deals[index],
-        stage: newStage,
-        updatedAt: new Date().toISOString(),
+    try {
+      const payload = {
+        records: [{
+          Id: parseInt(id),
+          stage_c: newStage
+        }]
       };
-      return { ...deals[index] };
+
+      const response = await apperClient.updateRecord('deal_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} deal stages:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const updated = successful[0].data;
+          return {
+            ...updated,
+            contactId: updated.contact_id_c?.Id || updated.contact_id_c
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error updating deal stage:", error);
+      return null;
     }
-    return null;
   },
 
   delete: async (id) => {
-    await delay(300);
-    const index = deals.findIndex((d) => d.Id === parseInt(id));
-    if (index !== -1) {
-      deals.splice(index, 1);
-      return true;
+    try {
+      const response = await apperClient.deleteRecord('deal_c', {
+        RecordIds: [parseInt(id)]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const failed = response.results.filter(r => !r.success);
+        if (failed.length > 0) {
+          console.error(`Failed to delete deal:`, failed);
+          return false;
+        }
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error deleting deal:", error);
+      return false;
     }
-    return false;
   },
 };
 

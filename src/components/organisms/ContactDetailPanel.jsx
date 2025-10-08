@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import ActivityTimeline from "@/components/organisms/ActivityTimeline";
 import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
-import ActivityTimeline from "./ActivityTimeline";
 import activityService from "@/services/api/activityService";
 import dealService from "@/services/api/dealService";
-import Loading from "@/components/ui/Loading";
-import { motion, AnimatePresence } from "framer-motion";
 
 const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
   const [activeTab, setActiveTab] = useState("info");
@@ -67,18 +67,18 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
           <div className="border-b border-gray-200 px-6 py-4">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-blue-700 rounded-full text-white text-xl font-bold">
-                  {contact.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {contact.name}
-                  </h2>
-                  <p className="text-secondary">{contact.company}</p>
-                </div>
+<div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-blue-700 rounded-full text-white text-xl font-bold">
+                {contact.name_c
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {contact.name_c}
+                </h2>
+                <p className="text-secondary">{contact.company_c}</p>
+              </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button size="sm" onClick={() => onEdit(contact)}>
@@ -121,64 +121,64 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
                     Contact Information
                   </h3>
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3 text-secondary">
-                      <ApperIcon name="Mail" size={18} />
-                      <a
-                        href={`mailto:${contact.email}`}
-                        className="hover:text-primary"
-                      >
-                        {contact.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 text-secondary">
-                      <ApperIcon name="Phone" size={18} />
-                      <a
-                        href={`tel:${contact.phone}`}
-                        className="hover:text-primary"
-                      >
-                        {contact.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 text-secondary">
-                      <ApperIcon name="Building2" size={18} />
-                      <span>{contact.company}</span>
-                    </div>
+<div className="flex items-center gap-3 text-secondary">
+                    <ApperIcon name="Mail" size={18} />
+                    <a
+                      href={`mailto:${contact.email_c}`}
+                      className="hover:text-primary"
+                    >
+                      {contact.email_c}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-secondary">
+                    <ApperIcon name="Phone" size={18} />
+                    <a
+                      href={`tel:${contact.phone_c}`}
+                      className="hover:text-primary"
+                    >
+                      {contact.phone_c}
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-3 text-secondary">
+                    <ApperIcon name="Building2" size={18} />
+                    <span>{contact.company_c}</span>
                   </div>
                 </div>
+              </div>
 
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
+                  Status
+                </h3>
+                <Badge variant={contact.status_c}>
+                  {contact.status_c.charAt(0).toUpperCase() +
+                    contact.status_c.slice(1)}
+                </Badge>
+              </div>
+
+{contact.tags && contact.tags.length > 0 && (
                 <div>
                   <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
-                    Status
+                    Tags
                   </h3>
-                  <Badge variant={contact.status}>
-                    {contact.status.charAt(0).toUpperCase() +
-                      contact.status.slice(1)}
-                  </Badge>
+                  <div className="flex flex-wrap gap-2">
+                    {contact.tags.map((tag, i) => (
+                      <Badge key={i} variant="default">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
+              )}
 
-                {contact.tags && contact.tags.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
-                      Tags
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {contact.tags.map((tag, i) => (
-                        <Badge key={i} variant="default">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {contact.notes && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
-                      Notes
-                    </h3>
-                    <p className="text-secondary">{contact.notes}</p>
-                  </div>
-                )}
+              {contact.notes_c && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
+                    Notes
+                  </h3>
+                  <p className="text-secondary">{contact.notes_c}</p>
+                </div>
+              )}
               </div>
             )}
 
@@ -201,29 +201,29 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
                       key={deal.Id}
                       className="bg-gray-50 rounded-lg p-4 border border-gray-200"
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-semibold text-gray-900">
-                          {deal.title}
-                        </h4>
-                        <Badge variant={deal.stage}>
-                          {deal.stage.charAt(0).toUpperCase() +
-                            deal.stage.slice(1)}
-                        </Badge>
-                      </div>
-                      <p className="text-2xl font-bold text-gray-900 mb-2">
-                        {formatCurrency(deal.value)}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-secondary">
-                        <span className="flex items-center gap-1">
-                          <ApperIcon name="Target" size={14} />
-                          {deal.probability}% probability
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <ApperIcon name="Calendar" size={14} />
-                          Close: {deal.expectedCloseDate}
-                        </span>
-                      </div>
-                    </div>
+<h4 className="font-semibold text-gray-900">
+                      {deal.title_c}
+                    </h4>
+                    <Badge variant={deal.stage_c}>
+                      {deal.stage_c.charAt(0).toUpperCase() +
+                        deal.stage_c.slice(1)}
+                    </Badge>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900 mb-2">
+                    {formatCurrency(deal.value_c)}
+                  </p>
+                  <div className="flex items-center gap-4 text-sm text-secondary">
+                    <span className="flex items-center gap-1">
+                      <ApperIcon name="Target" size={14} />
+                      {deal.probability_c}% probability
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <ApperIcon name="Calendar" size={14} />
+                      Close: {deal.expected_close_date_c}
+                    </span>
+                  </div>
+                </div>
+              ))
                   ))
                 )}
               </div>

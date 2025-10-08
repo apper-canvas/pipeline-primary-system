@@ -1,68 +1,233 @@
-import contactsData from "../mockData/contacts.json";
+const { ApperClient } = window.ApperSDK;
 
-let contacts = [...contactsData];
-
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 const contactService = {
   getAll: async () => {
-    await delay(300);
-    return [...contacts];
+    try {
+      const response = await apperClient.fetchRecords('contact_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "status_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "notes_c"}}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(contact => ({
+        ...contact,
+        tags: contact.tags_c ? contact.tags_c.split(',') : []
+      }));
+    } catch (error) {
+      console.error("Error fetching contacts:", error);
+      return [];
+    }
   },
 
   getById: async (id) => {
-    await delay(200);
-    const contact = contacts.find((c) => c.Id === parseInt(id));
-    return contact ? { ...contact } : null;
+    try {
+      const response = await apperClient.getRecordById('contact_c', parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "status_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "notes_c"}}
+        ]
+      });
+
+      if (!response.success || !response.data) {
+        return null;
+      }
+
+      return {
+        ...response.data,
+        tags: response.data.tags_c ? response.data.tags_c.split(',') : []
+      };
+    } catch (error) {
+      console.error(`Error fetching contact ${id}:`, error);
+      return null;
+    }
   },
 
   create: async (contactData) => {
-    await delay(300);
-    const maxId = contacts.reduce((max, c) => Math.max(max, c.Id), 0);
-    const newContact = {
-      Id: maxId + 1,
-      ...contactData,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    contacts.push(newContact);
-    return { ...newContact };
+    try {
+      const payload = {
+        records: [{
+          name_c: contactData.name,
+          company_c: contactData.company,
+          email_c: contactData.email,
+          phone_c: contactData.phone,
+          status_c: contactData.status,
+          tags_c: Array.isArray(contactData.tags) ? contactData.tags.join(',') : contactData.tags,
+          notes_c: contactData.notes || ''
+        }]
+      };
+
+      const response = await apperClient.createRecord('contact_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} contacts:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const created = successful[0].data;
+          return {
+            ...created,
+            tags: created.tags_c ? created.tags_c.split(',') : []
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating contact:", error);
+      return null;
+    }
   },
 
   update: async (id, contactData) => {
-    await delay(300);
-    const index = contacts.findIndex((c) => c.Id === parseInt(id));
-    if (index !== -1) {
-      contacts[index] = {
-        ...contacts[index],
-        ...contactData,
-        Id: contacts[index].Id,
-        updatedAt: new Date().toISOString(),
+    try {
+      const payload = {
+        records: [{
+          Id: parseInt(id),
+          name_c: contactData.name,
+          company_c: contactData.company,
+          email_c: contactData.email,
+          phone_c: contactData.phone,
+          status_c: contactData.status,
+          tags_c: Array.isArray(contactData.tags) ? contactData.tags.join(',') : contactData.tags,
+          notes_c: contactData.notes || ''
+        }]
       };
-      return { ...contacts[index] };
+
+      const response = await apperClient.updateRecord('contact_c', payload);
+
+      if (!response.success) {
+        console.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} contacts:`, failed);
+        }
+        
+        if (successful.length > 0) {
+          const updated = successful[0].data;
+          return {
+            ...updated,
+            tags: updated.tags_c ? updated.tags_c.split(',') : []
+          };
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error("Error updating contact:", error);
+      return null;
     }
-    return null;
   },
 
   delete: async (id) => {
-    await delay(300);
-    const index = contacts.findIndex((c) => c.Id === parseInt(id));
-    if (index !== -1) {
-      contacts.splice(index, 1);
-      return true;
+    try {
+      const response = await apperClient.deleteRecord('contact_c', {
+        RecordIds: [parseInt(id)]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const failed = response.results.filter(r => !r.success);
+        if (failed.length > 0) {
+          console.error(`Failed to delete contact:`, failed);
+          return false;
+        }
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error deleting contact:", error);
+      return false;
     }
-    return false;
   },
 
   search: async (query) => {
-    await delay(200);
-    const lowerQuery = query.toLowerCase();
-    return contacts.filter(
-      (c) =>
-        c.name.toLowerCase().includes(lowerQuery) ||
-        c.company.toLowerCase().includes(lowerQuery) ||
-        c.email.toLowerCase().includes(lowerQuery)
-    );
+    try {
+      const response = await apperClient.fetchRecords('contact_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "status_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "notes_c"}}
+        ],
+        whereGroups: [{
+          operator: "OR",
+          subGroups: [
+            {
+              conditions: [
+                {"fieldName": "name_c", "operator": "Contains", "values": [query]}
+              ]
+            },
+            {
+              conditions: [
+                {"fieldName": "company_c", "operator": "Contains", "values": [query]}
+              ]
+            },
+            {
+              conditions: [
+                {"fieldName": "email_c", "operator": "Contains", "values": [query]}
+              ]
+            }
+          ]
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data.map(contact => ({
+        ...contact,
+        tags: contact.tags_c ? contact.tags_c.split(',') : []
+      }));
+    } catch (error) {
+      console.error("Error searching contacts:", error);
+      return [];
+    }
   },
 };
 

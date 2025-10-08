@@ -46,11 +46,11 @@ const Contacts = () => {
     }
 
     const lowerQuery = query.toLowerCase();
-    const filtered = contacts.filter(
+const filtered = contacts.filter(
       (c) =>
-        c.name.toLowerCase().includes(lowerQuery) ||
-        c.company.toLowerCase().includes(lowerQuery) ||
-        c.email.toLowerCase().includes(lowerQuery)
+        c.name_c.toLowerCase().includes(lowerQuery) ||
+        c.company_c.toLowerCase().includes(lowerQuery) ||
+        c.email_c.toLowerCase().includes(lowerQuery)
     );
     setFilteredContacts(filtered);
   };
