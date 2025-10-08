@@ -8,11 +8,12 @@ const Header = ({ onAddClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { logout } = useContext(AuthContext);
 
-  const navItems = [
+const navItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
     { path: "/contacts", label: "Contacts", icon: "Users" },
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
+    { path: "/activities", label: "Activities", icon: "Activity" },
   ];
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">

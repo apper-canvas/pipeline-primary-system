@@ -8,13 +8,13 @@ import Dashboard from "@/components/pages/Dashboard";
 import Contacts from "@/components/pages/Contacts";
 import Pipeline from "@/components/pages/Pipeline";
 import Deals from "@/components/pages/Deals";
+import Activities from "@/components/pages/Activities";
 import Login from "@/components/pages/Login";
 import Signup from "@/components/pages/Signup";
 import Callback from "@/components/pages/Callback";
 import ErrorPage from "@/components/pages/ErrorPage";
 import ResetPassword from "@/components/pages/ResetPassword";
 import PromptPassword from "@/components/pages/PromptPassword";
-
 export const AuthContext = createContext(null);
 
 function AppContent() {
@@ -122,11 +122,12 @@ function AppContent() {
       <div className="min-h-screen bg-background">
         <Header onAddClick={() => {}} />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Routes>
+<Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/deals" element={<Deals />} />
+            <Route path="/activities" element={<Activities />} />
           </Routes>
         </main>
         <ToastContainer
@@ -152,6 +153,7 @@ function AppContent() {
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/deals" element={<Deals />} />
+            <Route path="/activities" element={<Activities />} />
           </Routes>
         </main>
       </div>
