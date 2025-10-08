@@ -1,20 +1,20 @@
-import { createContext, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import React, { createContext, useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
-import { setUser, clearUser } from "./store/userSlice";
-import Header from "@/components/organisms/Header";
-import Dashboard from "@/components/pages/Dashboard";
-import Contacts from "@/components/pages/Contacts";
-import Pipeline from "@/components/pages/Pipeline";
+import PromptPassword from "@/components/pages/PromptPassword";
+import ErrorPage from "@/components/pages/ErrorPage";
 import Deals from "@/components/pages/Deals";
 import Activities from "@/components/pages/Activities";
+import Callback from "@/components/pages/Callback";
+import Pipeline from "@/components/pages/Pipeline";
+import Dashboard from "@/components/pages/Dashboard";
+import ResetPassword from "@/components/pages/ResetPassword";
 import Login from "@/components/pages/Login";
 import Signup from "@/components/pages/Signup";
-import Callback from "@/components/pages/Callback";
-import ErrorPage from "@/components/pages/ErrorPage";
-import ResetPassword from "@/components/pages/ResetPassword";
-import PromptPassword from "@/components/pages/PromptPassword";
+import Contacts from "@/components/pages/Contacts";
+import Header from "@/components/organisms/Header";
+import { clearUser, setUser } from "@/store/userSlice";
 export const AuthContext = createContext(null);
 
 function AppContent() {
@@ -86,8 +86,11 @@ function AppContent() {
     });
   }, []);
 
+const { userId } = useSelector((state) => state.user);
+  
   const authMethods = {
     isInitialized,
+    userId,
     logout: async () => {
       try {
         const { ApperUI } = window.ApperSDK;
