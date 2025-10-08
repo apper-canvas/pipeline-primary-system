@@ -138,7 +138,7 @@ return (
                 ))
               )}
             </div>
-          </div>
+</motion.div>
         );
       })}
     </div>
