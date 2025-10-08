@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
-
+import Button from "@/components/atoms/Button";
 const DealModal = ({ isOpen, onClose, onSave, deal = null, contacts = [] }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -17,17 +17,22 @@ const DealModal = ({ isOpen, onClose, onSave, deal = null, contacts = [] }) => {
 
   const [errors, setErrors] = useState({});
 
+const [originalStage, setOriginalStage] = useState("");
+  const [generatingEmail, setGeneratingEmail] = useState(false);
+
   useEffect(() => {
     if (deal) {
+      const dealStage = deal.stage || "lead";
       setFormData({
         title: deal.title || "",
         contactId: deal.contactId || "",
         value: deal.value || "",
-        stage: deal.stage || "lead",
+        stage: dealStage,
         probability: deal.probability || "",
         expectedCloseDate: deal.expectedCloseDate || "",
         notes: deal.notes || "",
       });
+      setOriginalStage(dealStage);
     } else {
       setFormData({
         title: "",
@@ -38,15 +43,58 @@ const DealModal = ({ isOpen, onClose, onSave, deal = null, contacts = [] }) => {
         expectedCloseDate: "",
         notes: "",
       });
+      setOriginalStage("");
     }
     setErrors({});
+    setGeneratingEmail(false);
   }, [deal, isOpen]);
 
-  const handleChange = (e) => {
+const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    // Detect stage change and generate email template
+    if (name === 'stage' && value !== originalStage && formData.title && deal) {
+      setGeneratingEmail(true);
+      try {
+        const { ApperClient } = window.ApperSDK;
+        const apperClient = new ApperClient({
+          apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+          apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+        });
+
+        const result = await apperClient.functions.invoke(
+          import.meta.env.VITE_GENERATE_DEAL_EMAIL,
+          {
+            body: JSON.stringify({
+              dealTitle: formData.title,
+              stage: value
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (result.success && result.emailTemplate) {
+          setFormData((prev) => ({
+            ...prev,
+            notes: result.emailTemplate
+          }));
+          toast.success("Email template generated successfully!");
+        } else {
+          console.info(`apper_info: Got an error in this function: ${import.meta.env.VITE_GENERATE_DEAL_EMAIL}. The response body is: ${JSON.stringify(result)}.`);
+          toast.error(result.message || "Failed to generate email template");
+        }
+      } catch (error) {
+        console.info(`apper_info: Got this error in this function: ${import.meta.env.VITE_GENERATE_DEAL_EMAIL}. The error is: ${error.message}`);
+        toast.error("Failed to generate email template");
+      } finally {
+        setGeneratingEmail(false);
+      }
     }
   };
 
@@ -73,7 +121,7 @@ const DealModal = ({ isOpen, onClose, onSave, deal = null, contacts = [] }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
       onSave({
@@ -84,6 +132,11 @@ const DealModal = ({ isOpen, onClose, onSave, deal = null, contacts = [] }) => {
       });
     }
   };
+
+// Show generating message in notes field
+  const notesPlaceholder = generatingEmail 
+    ? "Generating email template..." 
+    : "Add notes about this deal...";
 
   if (!isOpen) return null;
 

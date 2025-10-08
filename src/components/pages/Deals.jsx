@@ -13,7 +13,6 @@ import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
 import dealService from "@/services/api/dealService";
 import contactService from "@/services/api/contactService";
-
 const Deals = () => {
 const authMethods = useContext(AuthContext);
   const { isInitialized, userId } = authMethods || {};
