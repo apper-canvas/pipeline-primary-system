@@ -3,7 +3,7 @@ import DealCard from "./DealCard";
 import ApperIcon from "@/components/ApperIcon";
 import { motion } from "framer-motion";
 
-const PipelineBoard = ({ deals, contacts, onUpdateStage, onEdit, onDelete }) => {
+const PipelineBoard = ({ deals, contacts, onUpdateStage, onEdit, onDelete, userId }) => {
   const [draggedDeal, setDraggedDeal] = useState(null);
   const [dragOverStage, setDragOverStage] = useState(null);
 
@@ -29,11 +29,14 @@ const getStageTotalValue = (stageId) => {
     }).format(total);
   };
 
-  const handleDragStart = (e, deal) => {
+const handleDragStart = (e, deal) => {
+    // Prevent dragging deals not owned by current user
+    if (deal.Owner?.Id !== userId) {
+      return;
+    }
     setDraggedDeal(deal);
     e.dataTransfer.effectAllowed = "move";
   };
-
   const handleDragOver = (e, stageId) => {
     e.preventDefault();
     setDragOverStage(stageId);
@@ -48,7 +51,10 @@ const handleDrop = async (e, stageId) => {
     setDragOverStage(null);
 
     if (draggedDeal && draggedDeal.stage_c !== stageId) {
-      await onUpdateStage(draggedDeal.Id, stageId);
+      // Verify ownership before updating stage
+      if (draggedDeal.Owner?.Id === userId) {
+        await onUpdateStage(draggedDeal.Id, stageId);
+      }
     }
     setDraggedDeal(null);
   };
@@ -97,11 +103,12 @@ const handleDrop = async (e, stageId) => {
                   <p className="text-sm">No deals</p>
                 </div>
               ) : (
-                stageDeals.map((deal) => (
+stageDeals.map((deal) => (
                   <div
                     key={deal.Id}
-                    draggable
+                    draggable={deal.Owner?.Id === userId}
                     onDragStart={(e) => handleDragStart(e, deal)}
+                    className={deal.Owner?.Id !== userId ? "opacity-60 cursor-not-allowed" : "cursor-move"}
                   >
                     <DealCard
                       deal={deal}
