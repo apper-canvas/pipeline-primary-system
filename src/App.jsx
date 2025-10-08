@@ -154,17 +154,6 @@ function AppContent() {
             <Route path="/deals" element={<Deals />} />
           </Routes>
         </main>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
       </div>
     </AuthContext.Provider>
   );
