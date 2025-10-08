@@ -21,16 +21,16 @@ const [originalStage, setOriginalStage] = useState("");
   const [generatingEmail, setGeneratingEmail] = useState(false);
 
   useEffect(() => {
-    if (deal) {
-      const dealStage = deal.stage || "lead";
+if (deal) {
+      const dealStage = deal.stage_c || "lead";
       setFormData({
-        title: deal.title || "",
-        contactId: deal.contactId || "",
-        value: deal.value || "",
+        title: deal.title_c || "",
+        contactId: deal.contact_id_c?.Id || deal.contact_id_c || "",
+        value: deal.value_c || "",
         stage: dealStage,
-        probability: deal.probability || "",
-        expectedCloseDate: deal.expectedCloseDate || "",
-        notes: deal.notes || "",
+        probability: deal.probability_c || "",
+        expectedCloseDate: deal.expected_close_date_c || "",
+        notes: deal.notes_c || "",
       });
       setOriginalStage(dealStage);
     } else {
