@@ -14,6 +14,7 @@ const navItems = [
     { path: "/companies", label: "Companies", icon: "Building" },
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
+    { path: "/quotes", label: "Quotes", icon: "FileText" },
     { path: "/activities", label: "Activities", icon: "Activity" },
   ];
   return (

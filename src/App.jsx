@@ -14,6 +14,7 @@ import Login from "@/components/pages/Login";
 import Signup from "@/components/pages/Signup";
 import Contacts from "@/components/pages/Contacts";
 import Companies from "@/components/pages/Companies";
+import Quotes from "@/components/pages/Quotes";
 import Header from "@/components/organisms/Header";
 import { clearUser, setUser } from "@/store/userSlice";
 export const AuthContext = createContext(null);
@@ -126,7 +127,7 @@ const { userId } = useSelector((state) => state.user);
       <div className="min-h-screen bg-background">
         <Header onAddClick={() => {}} />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Routes>
+<Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/callback" element={<Callback />} />
@@ -134,10 +135,11 @@ const { userId } = useSelector((state) => state.user);
             <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
             <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
             <Route path="/" element={<Dashboard />} />
-<Route path="/contacts" element={<Contacts />} />
+            <Route path="/contacts" element={<Contacts />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/deals" element={<Deals />} />
+            <Route path="/quotes" element={<Quotes />} />
             <Route path="/activities" element={<Activities />} />
           </Routes>
         </main>
