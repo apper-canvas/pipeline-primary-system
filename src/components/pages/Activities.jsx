@@ -7,12 +7,12 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import ApperIcon from "@/components/ApperIcon";
+import ActivityModal from "@/components/organisms/ActivityModal";
 import activityService from "@/services/api/activityService";
 import contactService from "@/services/api/contactService";
 import dealService from "@/services/api/dealService";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-
 const Activities = () => {
   const [activities, setActivities] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -180,7 +180,7 @@ const Activities = () => {
     return 0;
   });
 
-  if (loading) return <Loading />;
+if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadActivities} />;
 
   return (
@@ -319,6 +319,18 @@ const Activities = () => {
           })}
         </div>
       )}
+
+      <ActivityModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setSelectedActivity(null);
+        }}
+        onSave={handleSaveActivity}
+        activity={selectedActivity}
+        contacts={contacts}
+        deals={deals}
+      />
     </div>
   );
 };
