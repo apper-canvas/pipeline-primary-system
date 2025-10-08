@@ -196,34 +196,34 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
                     <p className="text-secondary">No deals found</p>
                   </div>
                 ) : (
-                  deals.map((deal) => (
+deals.map((deal) => (
                     <div
                       key={deal.Id}
                       className="bg-gray-50 rounded-lg p-4 border border-gray-200"
                     >
-<h4 className="font-semibold text-gray-900">
-                      {deal.title_c}
-                    </h4>
-                    <Badge variant={deal.stage_c}>
-                      {deal.stage_c.charAt(0).toUpperCase() +
-                        deal.stage_c.slice(1)}
-                    </Badge>
-                  </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-2">
-                    {formatCurrency(deal.value_c)}
-                  </p>
-                  <div className="flex items-center gap-4 text-sm text-secondary">
-                    <span className="flex items-center gap-1">
-                      <ApperIcon name="Target" size={14} />
-                      {deal.probability_c}% probability
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <ApperIcon name="Calendar" size={14} />
-                      Close: {deal.expected_close_date_c}
-                    </span>
-                  </div>
-                </div>
-              ))
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-semibold text-gray-900">
+                          {deal.title_c}
+                        </h4>
+                        <Badge variant={deal.stage_c}>
+                          {deal.stage_c.charAt(0).toUpperCase() +
+                            deal.stage_c.slice(1)}
+                        </Badge>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900 mb-2">
+                        {formatCurrency(deal.value_c)}
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-secondary">
+                        <span className="flex items-center gap-1">
+                          <ApperIcon name="Target" size={14} />
+                          {deal.probability_c}% probability
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <ApperIcon name="Calendar" size={14} />
+                          Close: {deal.expected_close_date_c}
+                        </span>
+                      </div>
+                    </div>
                   ))
                 )}
               </div>
