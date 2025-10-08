@@ -13,6 +13,7 @@ import ResetPassword from "@/components/pages/ResetPassword";
 import Login from "@/components/pages/Login";
 import Signup from "@/components/pages/Signup";
 import Contacts from "@/components/pages/Contacts";
+import Companies from "@/components/pages/Companies";
 import Header from "@/components/organisms/Header";
 import { clearUser, setUser } from "@/store/userSlice";
 export const AuthContext = createContext(null);
@@ -133,7 +134,8 @@ const { userId } = useSelector((state) => state.user);
             <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
             <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
             <Route path="/" element={<Dashboard />} />
-            <Route path="/contacts" element={<Contacts />} />
+<Route path="/contacts" element={<Contacts />} />
+            <Route path="/companies" element={<Companies />} />
             <Route path="/pipeline" element={<Pipeline />} />
             <Route path="/deals" element={<Deals />} />
             <Route path="/activities" element={<Activities />} />

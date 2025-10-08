@@ -11,6 +11,7 @@ const Header = ({ onAddClick }) => {
 const navItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
     { path: "/contacts", label: "Contacts", icon: "Users" },
+    { path: "/companies", label: "Companies", icon: "Building" },
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
     { path: "/activities", label: "Activities", icon: "Activity" },

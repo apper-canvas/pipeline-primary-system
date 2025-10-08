@@ -10,6 +10,16 @@ const Input = forwardRef(
       ? "border-red-500 focus:ring-red-500"
       : "border-gray-300";
 
+    if (type === "textarea") {
+      return (
+        <textarea
+          ref={ref}
+          className={cn(baseStyles, errorStyles, "min-h-[100px] resize-y", className)}
+          {...props}
+        />
+      );
+    }
+
     return (
       <input
         ref={ref}
