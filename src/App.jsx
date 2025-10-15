@@ -15,6 +15,7 @@ import Signup from "@/components/pages/Signup";
 import Contacts from "@/components/pages/Contacts";
 import Companies from "@/components/pages/Companies";
 import Quotes from "@/components/pages/Quotes";
+import SalesOrders from "@/components/pages/SalesOrders";
 import Header from "@/components/organisms/Header";
 import { clearUser, setUser } from "@/store/userSlice";
 export const AuthContext = createContext(null);
@@ -138,8 +139,9 @@ const { userId } = useSelector((state) => state.user);
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/pipeline" element={<Pipeline />} />
-            <Route path="/deals" element={<Deals />} />
+<Route path="/deals" element={<Deals />} />
             <Route path="/quotes" element={<Quotes />} />
+            <Route path="/sales-orders" element={<SalesOrders />} />
             <Route path="/activities" element={<Activities />} />
           </Routes>
         </main>

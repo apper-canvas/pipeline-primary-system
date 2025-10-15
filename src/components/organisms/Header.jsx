@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { logout } = useContext(AuthContext);
-
 const navItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
     { path: "/contacts", label: "Contacts", icon: "Users" },
@@ -15,6 +14,7 @@ const navItems = [
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
     { path: "/quotes", label: "Quotes", icon: "FileText" },
+    { path: "/sales-orders", label: "Sales Orders", icon: "ShoppingCart" },
     { path: "/activities", label: "Activities", icon: "Activity" },
   ];
   return (
