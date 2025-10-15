@@ -112,7 +112,7 @@ return deals.filter((deal) => {
           title="Win Rate"
           value={`${stats.conversionRate.toFixed(1)}%`}
           icon="Award"
-          color="purple"
+color="blue"
           trend={{ value: 5, label: "vs last month" }}
         />
       </div>

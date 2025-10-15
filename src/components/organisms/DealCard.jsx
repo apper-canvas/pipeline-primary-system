@@ -30,7 +30,7 @@ const getDaysInStage = () => {
 whileHover={{ scale: isDragging ? 1 : 1.02 }}
       className={`bg-white rounded-lg p-4 shadow-sm border-l-4 cursor-move transition-shadow hover:shadow-md ${
         deal.stage_c === "lead"
-          ? "border-blue-500"
+          ? "border-purple-500"
           : deal.stage_c === "qualified"
           ? "border-yellow-500"
           : deal.stage_c === "proposal"
