@@ -4,7 +4,7 @@ import { AuthContext } from "../../App";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { motion, AnimatePresence } from "framer-motion";
-const Header = ({ onAddClick }) => {
+const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { logout } = useContext(AuthContext);
 
@@ -56,10 +56,6 @@ const navItems = [
 
 {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button onClick={onAddClick} size="sm">
-              <ApperIcon name="Plus" size={16} className="mr-2" />
-              Quick Add
-            </Button>
             <Button onClick={logout} size="sm" variant="outline">
               <ApperIcon name="LogOut" size={16} className="mr-2" />
               Logout
@@ -104,17 +100,7 @@ const navItems = [
                 </NavLink>
               ))}
               <div className="pt-2">
-                <Button
-                  onClick={() => {
-                    onAddClick();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full"
-                >
-                  <ApperIcon name="Plus" size={16} className="mr-2" />
-                  Quick Add
-                </Button>
-              </div>
+</div>
             </nav>
           </motion.div>
         )}
