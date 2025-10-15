@@ -60,13 +60,15 @@ const SalesOrders = () => {
     }
 
     const lowerQuery = query.toLowerCase();
-    const filtered = orders.filter((order) => {
+const filtered = orders.filter((order) => {
       const customer = companies.find((c) => c.Id === order.customer_c?.Id);
       const contact = contacts.find((c) => c.Id === order.contact_c?.Id);
+      const quote = order.quotes_c?.Name;
       return (
         order.order_number_c?.toLowerCase().includes(lowerQuery) ||
         customer?.name_c?.toLowerCase().includes(lowerQuery) ||
-        contact?.name_c?.toLowerCase().includes(lowerQuery)
+        contact?.name_c?.toLowerCase().includes(lowerQuery) ||
+        quote?.toLowerCase().includes(lowerQuery)
       );
     });
     setFilteredOrders(filtered);
@@ -314,6 +316,11 @@ const SalesOrders = () => {
                         </div>
                       )}
                     </div>
+                  )}
+{order.quotes_c && (
+                    <p className="mt-4 text-sm text-secondary border-t pt-4">
+                      <strong>Quote:</strong> {order.quotes_c.Name}
+                    </p>
                   )}
 
                   {order.notes_c && (

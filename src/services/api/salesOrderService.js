@@ -9,7 +9,7 @@ const salesOrderService = {
   getAll: async () => {
     try {
       const response = await apperClient.fetchRecords('sales_order_c', {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "order_number_c"}},
           {"field": {"Name": "order_date_c"}},
@@ -20,6 +20,7 @@ const salesOrderService = {
           {"field": {"Name": "shipping_address_c"}},
           {"field": {"Name": "billing_address_c"}},
           {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "quotes_c"}},
           {"field": {"Name": "Owner"}}
         ]
       });
@@ -40,7 +41,7 @@ const salesOrderService = {
     try {
       const response = await apperClient.getRecordById('sales_order_c', parseInt(id), {
         fields: [
-          {"field": {"Name": "Id"}},
+{"field": {"Name": "Id"}},
           {"field": {"Name": "order_number_c"}},
           {"field": {"Name": "order_date_c"}},
           {"field": {"Name": "customer_c"}},
@@ -50,6 +51,7 @@ const salesOrderService = {
           {"field": {"Name": "shipping_address_c"}},
           {"field": {"Name": "billing_address_c"}},
           {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "quotes_c"}},
           {"field": {"Name": "Owner"}}
         ]
       });
@@ -77,7 +79,8 @@ const salesOrderService = {
           status_c: orderData.status,
           shipping_address_c: orderData.shippingAddress || '',
           billing_address_c: orderData.billingAddress || '',
-          notes_c: orderData.notes || ''
+notes_c: orderData.notes || '',
+          quotes_c: orderData.quoteId ? parseInt(orderData.quoteId) : undefined
         }]
       };
 
@@ -120,7 +123,8 @@ const salesOrderService = {
           status_c: orderData.status,
           shipping_address_c: orderData.shippingAddress || '',
           billing_address_c: orderData.billingAddress || '',
-          notes_c: orderData.notes || ''
+notes_c: orderData.notes || '',
+          quotes_c: orderData.quoteId ? parseInt(orderData.quoteId) : undefined
         }]
       };
 

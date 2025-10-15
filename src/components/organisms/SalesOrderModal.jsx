@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
+import { toast } from "react-toastify";
+import quoteService from "@/services/api/quoteService";
+import companyService from "@/services/api/companyService";
+import contactService from "@/services/api/contactService";
 import ApperIcon from "@/components/ApperIcon";
-import FormField from "@/components/molecules/FormField";
 import Button from "@/components/atoms/Button";
+import FormField from "@/components/molecules/FormField";
 
-const SalesOrderModal = ({ 
-  isOpen, 
-  onClose, 
-  onSave, 
-  order = null, 
-  companies = [], 
-  contacts = [] 
-}) => {
+export default function SalesOrderModal({ isOpen, onClose, onCreate, onUpdate, editingOrder = null }) {
+  const [companies, setCompanies] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [quotes, setQuotes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     orderNumber: "",
     orderDate: "",
@@ -22,22 +25,21 @@ const SalesOrderModal = ({
     shippingAddress: "",
     billingAddress: "",
     notes: "",
+    quoteId: "",
   });
-
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    if (order) {
+useEffect(() => {
+    if (editingOrder) {
       setFormData({
-        orderNumber: order.order_number_c || "",
-        orderDate: order.order_date_c || "",
-        customerId: order.customer_c?.Id || order.customer_c || "",
-        contactId: order.contact_c?.Id || order.contact_c || "",
-        totalAmount: order.total_amount_c || "",
-        status: order.status_c || "draft",
-        shippingAddress: order.shipping_address_c || "",
-        billingAddress: order.billing_address_c || "",
-        notes: order.notes_c || "",
+        orderNumber: editingOrder.order_number_c || "",
+        orderDate: editingOrder.order_date_c || "",
+        customerId: editingOrder.customer_c?.Id || editingOrder.customer_c || "",
+        contactId: editingOrder.contact_c?.Id || editingOrder.contact_c || "",
+        totalAmount: editingOrder.total_amount_c || "",
+        status: editingOrder.status_c || "draft",
+        shippingAddress: editingOrder.shipping_address_c || "",
+        billingAddress: editingOrder.billing_address_c || "",
+        notes: editingOrder.notes_c || "",
+        quoteId: editingOrder.quotes_c?.Id || "",
       });
     } else {
       setFormData({
@@ -50,10 +52,24 @@ const SalesOrderModal = ({
         shippingAddress: "",
         billingAddress: "",
         notes: "",
+        quoteId: "",
       });
     }
-    setErrors({});
-  }, [order, isOpen]);
+  }, [editingOrder]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const [companiesData, contactsData, quotesData] = await Promise.all([
+        companyService.getAll(),
+        contactService.getAll(),
+        quoteService.getAll()
+      ]);
+      setCompanies(companiesData);
+      setContacts(contactsData);
+      setQuotes(quotesData);
+    };
+loadData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +78,6 @@ const SalesOrderModal = ({
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
-
   const validate = () => {
     const newErrors = {};
 
@@ -86,18 +101,35 @@ const SalesOrderModal = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      onSave({
+    if (!validate()) return;
+
+    setLoading(true);
+    try {
+      const orderData = {
         ...formData,
         totalAmount: parseFloat(formData.totalAmount),
         customerId: parseInt(formData.customerId),
         contactId: parseInt(formData.contactId),
-      });
+        quoteId: formData.quoteId ? parseInt(formData.quoteId) : null,
+      };
+
+      if (editingOrder) {
+        await onUpdate(editingOrder.Id, orderData);
+        toast.success("Sales order updated successfully");
+      } else {
+        await onCreate(orderData);
+        toast.success("Sales order created successfully");
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error saving sales order:", error);
+      toast.error(error.message || "Failed to save sales order");
+    } finally {
+      setLoading(false);
     }
   };
-
   if (!isOpen) return null;
 
   return (
@@ -117,9 +149,9 @@ const SalesOrderModal = ({
           exit={{ opacity: 0, scale: 0.95, y: 0 }}
           className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         >
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+<div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold text-gray-900">
-              {order ? "Edit Sales Order" : "Add New Sales Order"}
+              {editingOrder ? "Edit Sales Order" : "Add New Sales Order"}
             </h2>
             <button
               onClick={onClose}
@@ -242,17 +274,34 @@ const SalesOrderModal = ({
                 onChange={handleChange}
                 rows={4}
                 placeholder="Add notes about this order..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
               />
             </FormField>
+            <FormField
+              label="Quote"
+              error={errors.quoteId}
+            >
+              <select
+                value={formData.quoteId}
+                onChange={(e) => setFormData({ ...formData, quoteId: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="">Select a quote</option>
+                {quotes.map((quote) => (
+                  <option key={quote.Id} value={quote.Id}>
+                    {quote.Name}
+                  </option>
+                ))}
+              </select>
+            </FormField>
 
-            <div className="flex items-center justify-end gap-3 pt-4 border-t">
-              <Button type="button" variant="secondary" onClick={onClose}>
+<div className="flex items-center justify-end gap-3 pt-4 border-t">
+              <Button type="button" variant="secondary" onClick={onClose} disabled={loading}>
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" disabled={loading}>
                 <ApperIcon name="Save" size={16} className="mr-2" />
-                {order ? "Update Order" : "Add Order"}
+                {loading ? "Saving..." : editingOrder ? "Update Order" : "Add Order"}
               </Button>
             </div>
           </form>
@@ -261,5 +310,3 @@ const SalesOrderModal = ({
     </AnimatePresence>
   );
 };
-
-export default SalesOrderModal;
