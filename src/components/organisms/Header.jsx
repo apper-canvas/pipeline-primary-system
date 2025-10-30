@@ -11,10 +11,9 @@ const navItems = [
     { path: "/", label: "Dashboard", icon: "LayoutDashboard" },
     { path: "/contacts", label: "Contacts", icon: "Users" },
     { path: "/companies", label: "Companies", icon: "Building" },
-    { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
+{ path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
     { path: "/quotes", label: "Quotes", icon: "FileText" },
-    { path: "/sales-orders", label: "Sales Orders", icon: "ShoppingCart" },
     { path: "/activities", label: "Activities", icon: "Activity" },
   ];
   return (

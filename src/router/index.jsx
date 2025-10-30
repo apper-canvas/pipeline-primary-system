@@ -17,7 +17,6 @@ const Companies = lazy(() => import('@/components/pages/Companies'));
 const Pipeline = lazy(() => import('@/components/pages/Pipeline'));
 const Deals = lazy(() => import('@/components/pages/Deals'));
 const Quotes = lazy(() => import('@/components/pages/Quotes'));
-const SalesOrders = lazy(() => import('@/components/pages/SalesOrders'));
 const Activities = lazy(() => import('@/components/pages/Activities'));
 const NotFound = lazy(() => import('@/components/pages/NotFound'));
 
@@ -90,10 +89,9 @@ export const router = createBrowserRouter([
           createRoute({ index: true, element: <Dashboard /> }),
           createRoute({ path: 'contacts', element: <Contacts /> }),
           createRoute({ path: 'companies', element: <Companies /> }),
-          createRoute({ path: 'pipeline', element: <Pipeline /> }),
+createRoute({ path: 'pipeline', element: <Pipeline /> }),
           createRoute({ path: 'deals', element: <Deals /> }),
           createRoute({ path: 'quotes', element: <Quotes /> }),
-          createRoute({ path: 'sales-orders', element: <SalesOrders /> }),
           createRoute({ path: 'activities', element: <Activities /> }),
         ],
       },
