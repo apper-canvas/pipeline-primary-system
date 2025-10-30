@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
-
+import companyService from "@/services/api/companyService";
 const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     company: "",
     email: "",
@@ -14,15 +14,34 @@ const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
     tags: [],
     notes: "",
   });
+  const [companies, setCompanies] = useState([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(false);
 
   const [tagInput, setTagInput] = useState("");
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
+    const loadCompanies = async () => {
+      if (isOpen) {
+        setLoadingCompanies(true);
+        try {
+          const companiesData = await companyService.getAll();
+          setCompanies(companiesData);
+        } catch (error) {
+          console.error("Error loading companies:", error);
+          setCompanies([]);
+        } finally {
+          setLoadingCompanies(false);
+        }
+      }
+    };
+
+    loadCompanies();
+
     if (contact) {
       setFormData({
         name: contact.name || "",
-        company: contact.company || "",
+        company: contact.company_c?.Id || contact.company || "",
         email: contact.email || "",
         phone: contact.phone || "",
         status: contact.status || "active",
@@ -43,9 +62,10 @@ const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
     setErrors({});
   }, [contact, isOpen]);
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const finalValue = name === 'company' ? (value ? parseInt(value) : '') : value;
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -141,15 +161,32 @@ const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
                 placeholder="John Doe"
               />
 
-              <FormField
-                label="Company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                error={errors.company}
-                required
-                placeholder="Acme Inc"
-              />
+<div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  Company <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  disabled={loadingCompanies}
+                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                    errors.company ? 'border-red-500' : 'border-gray-300'
+                  } ${loadingCompanies ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  <option value="">
+                    {loadingCompanies ? 'Loading companies...' : 'Select a company'}
+                  </option>
+                  {companies.map((company) => (
+                    <option key={company.Id} value={company.Id}>
+                      {company.name_c || company.Name}
+                    </option>
+                  ))}
+                </select>
+                {errors.company && (
+                  <p className="text-red-500 text-xs mt-1">{errors.company}</p>
+                )}
+              </div>
 
               <FormField
                 label="Email"
