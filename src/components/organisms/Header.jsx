@@ -14,8 +14,7 @@ const navItems = [
     { path: "/pipeline", label: "Pipeline", icon: "GitBranch" },
     { path: "/deals", label: "Deals", icon: "DollarSign" },
     { path: "/quotes", label: "Quotes", icon: "FileText" },
-    { path: "/sales-orders", label: "Sales Orders", icon: "ShoppingCart" },
-    { path: "/activities", label: "Activities", icon: "Activity" },
+{ path: "/activities", label: "Activities", icon: "Activity" },
   ];
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
