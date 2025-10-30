@@ -9,7 +9,8 @@ import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 
-export default function SalesOrderModal({ isOpen, onClose, onCreate, onUpdate, editingOrder = null }) {
+// onCreate is REQUIRED when creating new orders (editingOrder === null)
+export default function SalesOrderModal({ isOpen, onClose, onCreate = null, onUpdate = null, editingOrder = null }) {
   // Early validation of required props
   if (isOpen && !editingOrder && typeof onCreate !== 'function') {
     console.error('SalesOrderModal: onCreate prop is required for creating new orders');
