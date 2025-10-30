@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { AuthContext } from "@/App";
+import { useAuth } from "@/layouts/Root";
 import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import Error from "@/components/ui/Error";
@@ -16,8 +16,7 @@ import companyService from "@/services/api/companyService";
 import contactService from "@/services/api/contactService";
 
 const SalesOrders = () => {
-  const authMethods = useContext(AuthContext);
-  const { isInitialized, userId } = authMethods || {};
+const { isInitialized, userId } = useAuth();
   const [orders, setOrders] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [contacts, setContacts] = useState([]);
