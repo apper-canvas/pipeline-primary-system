@@ -92,10 +92,10 @@ const handleChange = (e) => {
   const validate = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) {
+if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     }
-    if (!formData.company.trim()) {
+    if (!formData.company) {
       newErrors.company = "Company is required";
     }
     if (!formData.email.trim()) {
