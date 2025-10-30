@@ -145,11 +145,17 @@ const ContactDetailPanel = ({ contact, onClose, onEdit }) => {
                     >
                       {contact.phone_c}
                     </a>
-                  </div>
+</div>
                   <div className="flex items-center gap-3 text-secondary">
                     <ApperIcon name="Building2" size={18} />
                     <span>{contact.company_c}</span>
                   </div>
+                  {contact.address_c && (
+                    <div className="flex items-start gap-3 text-secondary">
+                      <ApperIcon name="MapPin" size={18} className="mt-1" />
+                      <span className="whitespace-pre-line">{contact.address_c}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

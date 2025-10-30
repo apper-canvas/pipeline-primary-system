@@ -5,11 +5,12 @@ import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 
 const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     company: "",
     email: "",
     phone: "",
+    address: "",
     status: "active",
     tags: [],
     notes: "",
@@ -20,21 +21,23 @@ const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
 
   useEffect(() => {
     if (contact) {
-      setFormData({
+setFormData({
         name: contact.name || "",
         company: contact.company || "",
         email: contact.email || "",
         phone: contact.phone || "",
+        address: contact.address || "",
         status: contact.status || "active",
         tags: contact.tags || [],
         notes: contact.notes || "",
       });
     } else {
-      setFormData({
+setFormData({
         name: "",
         company: "",
         email: "",
         phone: "",
+        address: "",
         status: "active",
         tags: [],
         notes: "",
@@ -167,10 +170,19 @@ const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
                 name="phone"
                 type="tel"
                 value={formData.phone}
-                onChange={handleChange}
+onChange={handleChange}
                 error={errors.phone}
                 required
                 placeholder="+1 (555) 123-4567"
+              />
+              <FormField
+                label="Address"
+                name="address"
+                type="textarea"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter contact address"
+                rows={3}
               />
             </div>
 
