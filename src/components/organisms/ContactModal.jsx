@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
-
+import companyService from "@/services/api/companyService";
 const ContactModal = ({ isOpen, onClose, onSave, contact = null }) => {
 const [formData, setFormData] = useState({
     name: "",
-    company: "",
+    company: null,
     email: "",
     phone: "",
     address: "",
@@ -15,6 +15,26 @@ const [formData, setFormData] = useState({
     tags: [],
     notes: "",
   });
+  const [companies, setCompanies] = useState([]);
+  const [companiesLoading, setCompaniesLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      if (isOpen) {
+        setCompaniesLoading(true);
+        try {
+          const companyList = await companyService.getAll();
+          setCompanies(companyList || []);
+        } catch (error) {
+          console.error("Error fetching companies:", error);
+          setCompanies([]);
+        } finally {
+          setCompaniesLoading(false);
+        }
+      }
+    };
+    fetchCompanies();
+  }, [isOpen]);
 
   const [tagInput, setTagInput] = useState("");
   const [errors, setErrors] = useState({});
@@ -23,7 +43,7 @@ const [formData, setFormData] = useState({
     if (contact) {
 setFormData({
         name: contact.name || "",
-        company: contact.company || "",
+        company: contact.company_c?.Id || null,
         email: contact.email || "",
         phone: contact.phone || "",
         address: contact.address || "",
@@ -34,7 +54,7 @@ setFormData({
     } else {
 setFormData({
         name: "",
-        company: "",
+        company: null,
         email: "",
         phone: "",
         address: "",
@@ -46,9 +66,10 @@ setFormData({
     setErrors({});
   }, [contact, isOpen]);
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const processedValue = name === "company" ? (value ? parseInt(value) : null) : value;
+    setFormData((prev) => ({ ...prev, [name]: processedValue }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -78,7 +99,7 @@ setFormData({
     if (!formData.name.trim()) {
       newErrors.name = "Name is required";
     }
-    if (!formData.company.trim()) {
+if (!formData.company) {
       newErrors.company = "Company is required";
     }
     if (!formData.email.trim()) {
@@ -144,15 +165,32 @@ setFormData({
                 placeholder="John Doe"
               />
 
-              <FormField
-                label="Company"
-                name="company"
-                value={formData.company}
-                onChange={handleChange}
-                error={errors.company}
-                required
-                placeholder="Acme Inc"
-              />
+<div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="company"
+                  value={formData.company || ""}
+                  onChange={handleChange}
+                  disabled={companiesLoading}
+                  className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
+                    errors.company ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <option value="">
+                    {companiesLoading ? "Loading companies..." : "Select a company"}
+                  </option>
+                  {companies.map((company) => (
+                    <option key={company.Id} value={company.Id}>
+                      {company.Name || company.name_c}
+                    </option>
+                  ))}
+                </select>
+                {errors.company && (
+                  <p className="mt-1 text-sm text-red-500">{errors.company}</p>
+                )}
+              </div>
 
               <FormField
                 label="Email"
