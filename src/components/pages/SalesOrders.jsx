@@ -1,23 +1,25 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { format } from "date-fns";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { AuthContext } from "@/App";
-import ApperIcon from "@/components/ApperIcon";
-import SearchBar from "@/components/molecules/SearchBar";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import Loading from "@/components/ui/Loading";
-import SalesOrderModal from "@/components/organisms/SalesOrderModal";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
+import { format } from "date-fns";
+import { useAuth } from "@/layouts/Root";
 import salesOrderService from "@/services/api/salesOrderService";
 import companyService from "@/services/api/companyService";
 import contactService from "@/services/api/contactService";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import SalesOrderModal from "@/components/organisms/SalesOrderModal";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import SearchBar from "@/components/molecules/SearchBar";
 
 const SalesOrders = () => {
-  const authMethods = useContext(AuthContext);
-  const { isInitialized, userId } = authMethods || {};
+const { isInitialized } = useAuth();
+  const { user } = useSelector((state) => state.user);
+  const userId = user?.userId;
   const [orders, setOrders] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [contacts, setContacts] = useState([]);
