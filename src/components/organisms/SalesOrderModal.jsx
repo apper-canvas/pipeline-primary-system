@@ -10,6 +10,13 @@ import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 
 export default function SalesOrderModal({ isOpen, onClose, onCreate, onUpdate, editingOrder = null }) {
+  // Early validation of required props
+  if (isOpen && !editingOrder && typeof onCreate !== 'function') {
+    console.error('SalesOrderModal: onCreate prop is required for creating new orders');
+  }
+  if (isOpen && editingOrder && typeof onUpdate !== 'function') {
+    console.error('SalesOrderModal: onUpdate prop is required for updating orders');
+  }
   const [companies, setCompanies] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [quotes, setQuotes] = useState([]);
@@ -123,7 +130,7 @@ const handleSubmit = async (e) => {
         toast.success("Sales order created successfully");
       }
       onClose();
-    } catch (error) {
+} catch (error) {
       console.error("Error saving sales order:", error);
       toast.error(error.message || "Failed to save sales order");
     } finally {
